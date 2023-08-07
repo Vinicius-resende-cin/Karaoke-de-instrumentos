@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "karaoke-api"
+version = "0.1.0"
+description = "Backend API for Instruments Karaoke"
+authors = ["vitor-amartins <vmam@cin.ufpe.br>"]
+readme = "README.md"
+packages = [{include = "karaoke_api"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.101.0"
+uvicorn = "^0.23.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
