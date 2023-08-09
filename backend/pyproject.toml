@@ -7,9 +7,10 @@ readme = "README.md"
 packages = [{include = "karaoke_api"}]
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = ">=3.10,<3.11"
 fastapi = "^0.101.0"
 uvicorn = "^0.23.2"
+spleeter = "^2.4.0"
 
 
 [build-system]

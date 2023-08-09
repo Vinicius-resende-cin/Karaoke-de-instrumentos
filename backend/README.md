@@ -2,7 +2,15 @@
 
 ## Requirements
 
-You need to have Python 3.10 and Poetry installed
+You need to have Python 3.10 and Poetry installed.
+
+You need to have `ffmpeg` and `libsndfile` installed:
+
+```sh
+sudo apt-get update
+sudo apt-get install ffmpeg
+sudo apt-get install libsndfile1
+```
 
 ## Setup
 
