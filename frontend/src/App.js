@@ -6,6 +6,7 @@ import PlaylistPage from "./pages/PlaylistPage";
 import ProfilePage from "./pages/ProfilePage";
 import OptionsPage from "./pages/OptionsPage";
 import "./App.css";
+import InstrumentSelection from "./pages/test/InstrumentSelection";
 
 function CurrentPage() {
   const pageName = useContext(PageContext);
@@ -17,7 +18,7 @@ function CurrentPage() {
     case "/profile":
       return <ProfilePage></ProfilePage>;
     case "/options":
-      return <OptionsPage></OptionsPage>;
+      return <InstrumentSelection></InstrumentSelection>;
     default:
       return <HomePage></HomePage>;
   }
