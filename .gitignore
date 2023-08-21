@@ -5,3 +5,6 @@ __pycache__/
 
 # Spleeter models
 pretrained_models/
+
+# JetBrains IDEs
+.idea/
