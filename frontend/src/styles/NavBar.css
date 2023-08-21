@@ -1,9 +1,0 @@
-#links {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-}
-
-img {
-  height: 2rem;
-}
