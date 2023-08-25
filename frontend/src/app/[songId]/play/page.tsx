@@ -4,7 +4,7 @@ import Image from "next/image";
 export default function Player(){
     return(
         <div className="container">
-        <a className="backButton" href="/">voltar</a>
+        <a className="backButton" href="javascript:history.back()">voltar</a>
         <p className="playingNow">Tocando agora: music info</p>
         <div className="lyricsContainer"></div>
         <div className="buttonsContainer">

@@ -51,8 +51,8 @@ export default function InstrumentSelection() {
           src={"/icons/home.ico"}
           alt="Song Cover"
           className="songImage"
-          width={100}
-          height={100}
+          width={130}
+          height={130}
         />
         <div className="songName">As It Was</div>
         <div className="artistName">Harry Styles</div>
