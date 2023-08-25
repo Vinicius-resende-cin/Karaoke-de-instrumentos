@@ -1,10 +1,14 @@
+"use client";
+import { useParams } from 'next/navigation';
 import './Player.scss';
 import Image from "next/image";
 
 export default function Player(){
+    const params = useParams()
+    const songId = params.songId
     return(
         <div className="container">
-        <a className="backButton" href="javascript:history.back()">voltar</a>
+        <a className="backButton" href={`/${songId}`}>voltar</a>
         <p className="playingNow">Tocando agora: music info</p>
         <div className="lyricsContainer"></div>
         <div className="buttonsContainer">
