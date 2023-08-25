@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { serverURL } from "@/config";
@@ -21,7 +21,7 @@ export default function InstrumentSelection() {
   const [showLetra, setShowLetra] = useState(false);
   const [song, setSong] = useState();
 
-  const params = useSearchParams();
+  const params = useParams();
 
   const toggleShowAcordes = () => {
     setShowAcordes(!showAcordes);
@@ -32,7 +32,7 @@ export default function InstrumentSelection() {
   };
 
   const getSong = async () => {
-    const songId = params.get("songId") as string;
+    const songId = params.songId as string;
     const song = await fetchSong(songId);
     setSong(song);
   };
@@ -51,8 +51,8 @@ export default function InstrumentSelection() {
           src={"/icons/home.ico"}
           alt="Song Cover"
           className="songImage"
-          width={100}
-          height={100}
+          width={130}
+          height={130}
         />
         <div className="songName">As It Was</div>
         <div className="artistName">Harry Styles</div>
