@@ -32,4 +32,6 @@ class SpleeterRepositoryCLI(SpleeterRepository):
         if self.is_splitted(filename):
             return
         # Split file
+        print(f'Splitting {filename}...')
         os.system(f'spleeter separate -p spleeter:5stems -o ./samples/ {filepath}')
+        print(f'Splitting {filename}... Done!')

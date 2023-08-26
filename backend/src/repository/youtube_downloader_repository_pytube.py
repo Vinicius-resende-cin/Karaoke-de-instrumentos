@@ -29,7 +29,8 @@ class YoutubeDownloaderRepositoryPytube(YoutubeDownloaderRepository):
             base, _ = os.path.splitext(song)
             new_file = base + '.mp3'
             os.rename(song, new_file)
-            return filename
+            print(f'File {filename} downloaded')
+            return new_file
         except (RegexMatchError, VideoUnavailable, PytubeError) as e:
             raise CustomError.error_downloading() from e
         except Exception as e:

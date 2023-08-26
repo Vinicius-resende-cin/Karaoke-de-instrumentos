@@ -10,10 +10,19 @@ import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 
 const BASE_URL = `${serverURL}/songs`;
 
+const songURL = (songId: string) => {
+  return `https://youtube.com/watch?v=${songId}`;
+};
+
 const fetchSong = async (songId: string) => {
   const response = await fetch(`${BASE_URL}/${songId}/`);
   const song = await response.json();
   return song;
+};
+
+const loadServerSong = async (songId: string) => {
+  const url = songURL(songId);
+  await fetch(`${serverURL}/download-and-split?url=${url}`, { method: "POST" });
 };
 
 export default function InstrumentSelection() {
@@ -33,6 +42,7 @@ export default function InstrumentSelection() {
 
   const getSong = async () => {
     const songId = params.songId as string;
+    await loadServerSong(songId);
     const song = await fetchSong(songId);
     setSong(song);
   };
@@ -54,8 +64,8 @@ export default function InstrumentSelection() {
           width={130}
           height={130}
         />
-        <div className="songName">As It Was</div>
-        <div className="artistName">Harry Styles</div>
+        <div className="songName">Riots</div>
+        <div className="artistName">Stuck In The Sound</div>
       </div>
       <div className="select">
         <label htmlFor="instrument" className="instrumentClass">
@@ -63,11 +73,10 @@ export default function InstrumentSelection() {
         </label>
         <div className="select-wrapper">
           <select>
-            <option value="guitarra">Guitarra</option>
+            <option value="guitarra">Baixo</option>
             <option value="piano">Piano</option>
-            <option value="violino">Violino</option>
-            <option value="violao">Violão</option>
-            <option value="bateria">Bateria</option>
+            <option value="bateria">Percurssão</option>
+            <option value="bateria">Vocal</option>
           </select>
           <span className="select-icon">
             <FontAwesomeIcon icon={faChevronDown} />
