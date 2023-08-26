@@ -24,7 +24,7 @@ poetry install
 
 Run the API:
 ```sh
-poetry run uvicorn src.main: app --reload
+poetry run uvicorn src.main:app --reload
 ```
 
 Check the docs accessing this URL on browser:
