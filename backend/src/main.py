@@ -5,14 +5,22 @@ from starlette import status
 from starlette.responses import JSONResponse
 
 from src.entity.custom_error import CustomError
+from src.repository.combine_stems_repository_pydub import CombineStemsRepositoryPydub
+from src.repository.file_repository import FileRepositoryImpl
 from src.repository.spleeter_repositry_cli import SpleeterRepositoryCLI
 from src.repository.youtube_downloader_repository_pytube import YoutubeDownloaderRepositoryPytube
 from src.usecase.download_and_split import DownloadAndSplitUseCase
+from src.usecase.get_track_with_removed_stem import GetTrackWithRemovedStemUseCase
+from src.usecase.list_tracks import ListTracksUseCase
 
-
+file_repository = FileRepositoryImpl()
 youtube_downloader_repository = YoutubeDownloaderRepositoryPytube()
-spleeter_repository = SpleeterRepositoryCLI()
+spleeter_repository = SpleeterRepositoryCLI(file_repository)
+combine_stems_repository = CombineStemsRepositoryPydub(file_repository)
+
 download_and_split_use_case = DownloadAndSplitUseCase(youtube_downloader_repository, spleeter_repository)
+get_track_with_removed_stem_use_case = GetTrackWithRemovedStemUseCase(file_repository, combine_stems_repository)
+list_tracks_use_case = ListTracksUseCase(file_repository)
 
 app = FastAPI()
 
@@ -28,5 +36,18 @@ def hello_world():
     return {"message": "Hello World"}
 
 @app.post("/download-and-split", status_code=status.HTTP_204_NO_CONTENT)
-def download_and_split(url: Annotated[str, Query()]):
+def download_and_split(
+        url: Annotated[str, Query()],
+):
     download_and_split_use_case.execute(url)
+
+@app.get("/tracks", status_code=status.HTTP_200_OK)
+def list_tracks():
+    return list_tracks_use_case.execute()
+
+@app.get("/track-with-removed-stem", status_code=status.HTTP_200_OK)
+def get_track_with_remove_stem(
+        filename: Annotated[str, Query()],
+        stem_to_remove: Annotated[str, Query()],
+):
+    return get_track_with_removed_stem_use_case.execute(filename, stem_to_remove)
