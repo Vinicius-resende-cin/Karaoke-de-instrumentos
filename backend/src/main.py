@@ -1,3 +1,5 @@
+from fastapi.middleware.cors import CORSMiddleware
+
 from typing import Annotated
 
 from fastapi import FastAPI, Query, Request
@@ -23,6 +25,18 @@ get_track_with_removed_stem_use_case = GetTrackWithRemovedStemUseCase(file_repos
 list_tracks_use_case = ListTracksUseCase(file_repository)
 
 app = FastAPI()
+
+origins = [
+    "http://localhost:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.exception_handler(CustomError)
 def custom_error_handler(_: Request, e: CustomError):
