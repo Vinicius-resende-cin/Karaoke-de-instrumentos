@@ -1,58 +1,56 @@
-button{
-    width: 50px;
-    height: 40px;
-    border-radius: 5px;
-    border-style: none;    
-    display: flex;
-    align-items: center;
-    justify-content: center;
+button {
+  width: 50px;
+  height: 40px;
+  border-radius: 5px;
+  border-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:disabled {
+    background-color: rgb(160, 160, 160);
+  }
 }
 
-img{
-    max-width: none;
-    width: 130px;
-    height: 130px;
+.container {
+  padding: 15px;
 }
 
-.container{
-    padding: 15px;
+.backButton {
+  color: black;
+  font-weight: bold;
+  font-size: 16px;
+  text-decoration: none;
 }
 
-.backButton{
-    color: black;
-    font-weight: bold ;
-    font-size: 16px;
-    text-decoration: none;
+.playingNow {
+  color: black;
+  font-size: 16px;
+  text-align: end;
 }
 
-.playingNow{
-    color: black;
-    font-size: 16px;    
-    text-align: end;
+.lyricsContainer {
+  height: 430px;
+  border-radius: 5px;
+  background-color: rgb(185, 229, 250);
 }
 
-.lyricsContainer{
-    height: 430px;
-    border-radius: 5px;
-    background-color: rgb(185, 229, 250);
+.buttonsContainer {
+  margin-top: 25px;
+  height: 80px;
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
 }
 
-.buttonsContainer{
-    margin-top: 25px;
-    height: 80px;
-    display: flex;
-    justify-content: space-around;
-    align-items:end;
+.pause {
+  background-color: rgb(58, 150, 236);
 }
 
-.pause{
-    background-color:rgb(58, 150, 236);
+.stop {
+  background-color: rgb(119, 120, 121);
 }
 
-.stop{
-    background-color:rgb(119, 120, 121);
-}
-
-.reset{
-    background-color:rgb(64, 185, 100);
+.reset {
+  background-color: rgb(64, 185, 100);
 }

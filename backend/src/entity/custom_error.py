@@ -1,4 +1,4 @@
-from starlette import status
+from starlette import status as st
 
 
 class CustomError(Exception):
@@ -11,16 +11,16 @@ class CustomError(Exception):
 
     @classmethod
     def internal_error(cls):
-        return cls(status.HTTP_500_INTERNAL_SERVER_ERROR, 'Internal Server Error')
+        return cls(st.HTTP_500_INTERNAL_SERVER_ERROR, 'Internal Server Error')
 
     @classmethod
     def file_not_found(cls):
-        return cls(status.HTTP_500_INTERNAL_SERVER_ERROR, 'File not found')
+        return cls(st.HTTP_500_INTERNAL_SERVER_ERROR, 'File not found')
 
     @classmethod
     def audio_not_found(cls):
-        return cls(status.HTTP_400_BAD_REQUEST, 'Audio not found for the provided URL.')
+        return cls(st.HTTP_400_BAD_REQUEST, 'Audio not found for the provided URL.')
 
     @classmethod
     def error_downloading(cls):
-        return cls(status.HTTP_500_INTERNAL_SERVER_ERROR, 'Error trying to download the video.')
+        return cls(st.HTTP_500_INTERNAL_SERVER_ERROR, 'Error trying to download the video.')
