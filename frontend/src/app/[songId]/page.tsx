@@ -95,9 +95,9 @@ export default function InstrumentSelection() {
           className={`checkbox2 ${showLetra ? "checked" : ""}`}
           onClick={toggleShowLetra}></div>
       </div>
-      <div className="playButton">
+      <Link className="playButton" href={`${params.songId}/play`}>
         <span className="playIcon">▶</span>
-      </div>
+      </Link>
     </div>
   );
 }
