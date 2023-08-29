@@ -1,8 +1,8 @@
 "use client";
-import "./Player.scss";
 import Image from "next/image";
 import { serverURL } from "@/config";
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 
 const fetchSong = async (songName: string, instrument: string) => {
   const response = await fetch(
@@ -48,7 +48,7 @@ export default function Player() {
     audioRef.current.currentTime = 0;
   }
 
-  useEffect(() => {
+  const handleFetchSong = async () => {
     fetchSong(songName, instrument)
       .then((song) => {
         const audioURL = URL.createObjectURL(song);
@@ -57,23 +57,32 @@ export default function Player() {
       .catch((error) => {
         console.error("Error fetching audio:", error);
       });
+  };
+
+  useEffect(() => {
+    handleFetchSong();
   }, []);
 
   return (
-    <div className="container">
-      <a className="backButton" href={`/${songName}`}>
-        voltar
-      </a>
-      <p className="playingNow">Tocando agora: {songName}</p>
+    <div className="p-10 flex flex-col items-center">
+      <Link href={`/${songName}`} className="self-start">
+        Voltar
+      </Link>
+      <p className="self-end text-blue-500">
+        Tocando agora: <span className="text-black font-bold">{songName}</span>
+      </p>
       {songSrc && (
         <audio ref={audioRef}>
           <source src={songSrc} type="audio/wav" />
           Your browser does not support the audio element.
         </audio>
       )}
-      <div className="lyricsContainer"></div>
-      <div className="buttonsContainer">
-        <button className="pause" onClick={playPause} disabled={!songSrc}>
+      <div className="w-full h-96 my-10 grow bg-blue-300 rounded-md"></div>
+      <div className="w-full flex items-center justify-around">
+        <button
+          className="w-10 h-10 flex items-center justify-center rounded-sm bg-blue-500 disabled:bg-gray-400"
+          onClick={playPause}
+          disabled={!songSrc}>
           <Image
             src={isPlaying ? "/icons/pause.ico" : "/icons/play.ico"}
             alt="play/pause button"
@@ -81,10 +90,16 @@ export default function Player() {
             height={20}
           />
         </button>
-        <button className="stop" onClick={stop} disabled={!songSrc}>
+        <button
+          className="w-10 h-10 flex items-center justify-center rounded-sm bg-gray-500 disabled:bg-gray-400"
+          onClick={stop}
+          disabled={!songSrc}>
           <Image src={"/icons/stop.ico"} alt="stop button" width={20} height={20} />
         </button>
-        <button className="reset" onClick={restart} disabled={!songSrc}>
+        <button
+          className="w-10 h-10 flex items-center justify-center rounded-sm bg-green-500 disabled:bg-gray-400"
+          onClick={restart}
+          disabled={!songSrc}>
           <Image src={"/icons/reset.ico"} alt="restart button" width={20} height={20} />
         </button>
       </div>

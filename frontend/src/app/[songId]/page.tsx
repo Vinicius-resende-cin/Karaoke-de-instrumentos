@@ -27,6 +27,7 @@ export default function InstrumentSelection() {
   const [showAcordes, setShowAcordes] = useState(false);
   const [showLetra, setShowLetra] = useState(false);
   const [song, setSong] = useState();
+  const [loadingSong, setLoadingSong] = useState(false);
 
   const params = useParams();
 
@@ -38,11 +39,17 @@ export default function InstrumentSelection() {
     setShowLetra(!showLetra);
   };
 
+  const handleLoadSong = async () => {
+    setLoadingSong(true);
+    await loadServerSong(params.songId as string);
+  };
+
   const getSong = async () => {
-    const songId = params.songId as string;
-    await loadServerSong(songId);
-    const song = await fetchSong(songId);
-    setSong(song);
+    if (!loadingSong) await handleLoadSong();
+    if (!song) {
+      const song = await fetchSong(params.songId as string);
+      setSong(song);
+    }
   };
 
   useEffect(() => {
@@ -50,17 +57,12 @@ export default function InstrumentSelection() {
   });
 
   return (
-    <div className="p-10 flex flex-col items-center gap-10">
+    <div className="p-10 flex flex-col items-center">
       <Link href="/home" className="self-start">
         Voltar
       </Link>
       <div className="flex flex-col items-center">
-        <Image
-          src={"/icons/home.ico"}
-          alt="Song Cover"
-          width={130}
-          height={130}
-        />
+        <Image src={"/icons/home.ico"} alt="Song Cover" width={130} height={130} />
         <div className="text-2xl font-bold mt-5">Riots</div>
         <div className="text-lg">Stuck In The Sound</div>
       </div>
@@ -72,8 +74,7 @@ export default function InstrumentSelection() {
           <div>
             <select
               itemID="instrument"
-              className="border rounded text-blue-400 text-lg text-center font-medium focus:outline-none focus:border-blue-500"
-            >
+              className="border rounded text-blue-500 text-lg text-center font-medium focus:outline-none focus:border-blue-500">
               <option value="guitarra">Baixo</option>
               <option value="piano">Piano</option>
               <option value="bateria">Percussão</option>
@@ -96,7 +97,9 @@ export default function InstrumentSelection() {
             onClick={toggleShowLetra}></div>
         </div>
       </form>
-      <Link className="w-1/2 flex items-center justify-center bg-blue-400 rounded-lg" href={`${params.songId}/play`}>
+      <Link
+        className="w-1/2 flex items-center justify-center bg-blue-400 rounded-lg"
+        href={`${params.songId}/play`}>
         <span className="py-1 text-2xl">▶</span>
       </Link>
     </div>
