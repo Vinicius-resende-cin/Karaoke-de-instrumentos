@@ -5,8 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { serverURL } from "@/config";
 import "./instrument-selection.scss";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 
 const BASE_URL = `${serverURL}/songs`;
 
@@ -52,51 +50,54 @@ export default function InstrumentSelection() {
   });
 
   return (
-    <div className="container">
-      <Link href="/home" className="backButton">
+    <div className="p-10 flex flex-col items-center gap-10">
+      <Link href="/home" className="self-start">
         Voltar
       </Link>
-      <div className="songContainer">
+      <div className="flex flex-col items-center">
         <Image
           src={"/icons/home.ico"}
           alt="Song Cover"
-          className="songImage"
           width={130}
           height={130}
         />
-        <div className="songName">Riots</div>
-        <div className="artistName">Stuck In The Sound</div>
+        <div className="text-2xl font-bold mt-5">Riots</div>
+        <div className="text-lg">Stuck In The Sound</div>
       </div>
-      <div className="select">
-        <label htmlFor="instrument" className="instrumentClass">
-          Instrumento:
-        </label>
-        <div className="select-wrapper">
-          <select>
-            <option value="guitarra">Baixo</option>
-            <option value="piano">Piano</option>
-            <option value="bateria">Percurssão</option>
-            <option value="bateria">Vocal</option>
-          </select>
-          <span className="select-icon">
-            <FontAwesomeIcon icon={faChevronDown} />
-          </span>
+      <form className="my-20 p-5 flex flex-col rounded-lg bg-gray-100" action="">
+        <div className="mb-10 flex items-center justify-between gap-3">
+          <label htmlFor="instrument" className="font-extrabold text-2xl">
+            Instrumento:
+          </label>
+          <div>
+            <select
+              itemID="instrument"
+              className="border rounded text-blue-400 text-lg text-center font-medium focus:outline-none focus:border-blue-500"
+            >
+              <option value="guitarra">Baixo</option>
+              <option value="piano">Piano</option>
+              <option value="bateria">Percussão</option>
+              <option value="bateria">Vocal</option>
+            </select>
+          </div>
         </div>
-      </div>
-      <div className="showOptions">
-        <div className="showText">Mostrar Acordes:</div>
-        <div
-          className={`checkbox ${showAcordes ? "checked" : ""}`}
-          onClick={toggleShowAcordes}></div>
-      </div>
-      <div className="showOptions">
-        <div className="showText">Mostrar Letra:</div>
-        <div
-          className={`checkbox2 ${showLetra ? "checked" : ""}`}
-          onClick={toggleShowLetra}></div>
-      </div>
-      <Link className="playButton" href={`${params.songId}/play`}>
-        <span className="playIcon">▶</span>
+        <div className="flex items-center justify-between text-lg font-extrabold">
+          <div>Mostrar Acordes:</div>
+          <div
+            className={`border-2 border-black w-5 h-5 transition-colors bg-transparent duration-300 flex items-center justify-center
+            ${showAcordes ? " checked" : ""}`}
+            onClick={toggleShowAcordes}></div>
+        </div>
+        <div className="flex items-center justify-between text-lg font-extrabold">
+          <div>Mostrar Letra:</div>
+          <div
+            className={`border-2 border-black w-5 h-5 transition-colors bg-transparent duration-300 flex items-center justify-center
+            ${showLetra ? " checked" : ""}`}
+            onClick={toggleShowLetra}></div>
+        </div>
+      </form>
+      <Link className="w-1/2 flex items-center justify-center bg-blue-400 rounded-lg" href={`${params.songId}/play`}>
+        <span className="py-1 text-2xl">▶</span>
       </Link>
     </div>
   );
