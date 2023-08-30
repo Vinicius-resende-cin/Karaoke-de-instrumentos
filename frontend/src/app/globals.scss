@@ -17,7 +17,9 @@
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: white;
-  height: 100vh;
+  @apply h-[100vh] text-black bg-white dark:text-slate-200 dark:bg-slate-800;
+
+  h1 {
+    @apply dark:text-white;
+  }
 }

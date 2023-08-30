@@ -75,7 +75,9 @@ export default function InstrumentSelection() {
         <div className="text-2xl font-bold mt-5">Riots</div>
         <div className="text-lg">Stuck In The Sound</div>
       </div>
-      <form className="my-20 p-5 flex flex-col rounded-lg bg-gray-100" action="">
+      <form
+        className="my-20 p-5 flex flex-col rounded-lg bg-gray-100 dark:text-slate-900"
+        action="">
         <div className="mb-10 flex items-center justify-between gap-3">
           <label htmlFor="instrument" className="font-extrabold text-2xl">
             Instrumento:
