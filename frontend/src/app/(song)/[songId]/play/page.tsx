@@ -72,7 +72,8 @@ export default function Player() {
         Voltar
       </Link>
       <p className="self-end text-blue-500">
-        Tocando agora: <span className="text-black font-bold">{songName}</span>
+        Tocando agora:{" "}
+        <span className="text-black font-bold dark:invert">{songName}</span>
       </p>
       {songSrc && (
         <audio ref={audioRef}>

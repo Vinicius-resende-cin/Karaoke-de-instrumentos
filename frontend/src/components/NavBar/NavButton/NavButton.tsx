@@ -24,6 +24,7 @@ export default function NavButton({
   return (
     <Link href={link} onClick={() => handleClick(name)}>
       <Image
+        className={selected ? "" : "dark:invert"}
         src={selected ? image_selected : image}
         alt={name}
         width={size}
