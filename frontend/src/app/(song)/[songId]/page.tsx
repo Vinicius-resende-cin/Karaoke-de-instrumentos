@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { serverURL } from "@/config";
 import "./instrument-selection.scss";
+import { useInstrumentContext } from "../contexts/IntrumentContext";
 
 const BASE_URL = `${serverURL}/songs`;
 
@@ -28,6 +29,7 @@ export default function InstrumentSelection() {
   const [showLetra, setShowLetra] = useState(false);
   const [song, setSong] = useState();
   const [loadingSong, setLoadingSong] = useState(false);
+  const { setChoosenInstrument } = useInstrumentContext();
 
   const params = useParams();
 
@@ -42,6 +44,13 @@ export default function InstrumentSelection() {
   const handleLoadSong = async () => {
     setLoadingSong(true);
     await loadServerSong(params.songId as string);
+  };
+
+  const handleChoosenInstrument = (instrument: string) => {
+    if (instrument === "guitarra") setChoosenInstrument("bass");
+    else if (instrument === "piano") setChoosenInstrument("piano");
+    else if (instrument === "bateria") setChoosenInstrument("drums");
+    else if (instrument === "vocal") setChoosenInstrument("vocals");
   };
 
   const getSong = async () => {
@@ -74,11 +83,12 @@ export default function InstrumentSelection() {
           <div>
             <select
               itemID="instrument"
-              className="border rounded text-blue-500 text-lg text-center font-medium focus:outline-none focus:border-blue-500">
+              className="border rounded text-blue-500 text-lg text-center font-medium focus:outline-none focus:border-blue-500"
+              onChange={(e) => handleChoosenInstrument(e.target.value)}>
               <option value="guitarra">Baixo</option>
               <option value="piano">Piano</option>
               <option value="bateria">Percussão</option>
-              <option value="bateria">Vocal</option>
+              <option value="vocal">Vocal</option>
             </select>
           </div>
         </div>

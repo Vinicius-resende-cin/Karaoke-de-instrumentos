@@ -3,6 +3,7 @@ import Image from "next/image";
 import { serverURL } from "@/config";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useInstrumentContext } from "../../contexts/IntrumentContext";
 
 const fetchSong = async (songName: string, instrument: string) => {
   const response = await fetch(
@@ -18,7 +19,7 @@ export default function Player() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const songName = "Riots";
-  const instrument = "vocals";
+  const { choosenInstrument } = useInstrumentContext();
 
   function stop() {
     if (audioRef.current) {
@@ -49,7 +50,7 @@ export default function Player() {
   }
 
   const handleFetchSong = async () => {
-    fetchSong(songName, instrument)
+    fetchSong(songName, choosenInstrument)
       .then((song) => {
         const audioURL = URL.createObjectURL(song);
         setSongSrc(audioURL);
