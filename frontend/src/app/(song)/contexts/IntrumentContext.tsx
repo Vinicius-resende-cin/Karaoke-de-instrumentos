@@ -13,7 +13,7 @@ interface InstrumentProviderProps {
 export const InstrumentContext = createContext<InstrumentContext | null>(null);
 
 export function InstrumentProvider({ children }: InstrumentProviderProps) {
-  const [choosenInstrument, setChoosenInstrument] = useState("vocal");
+  const [choosenInstrument, setChoosenInstrument] = useState("bass");
 
   return (
     <InstrumentContext.Provider value={{ choosenInstrument, setChoosenInstrument }}>

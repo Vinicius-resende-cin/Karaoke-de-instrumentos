@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { serverURL } from "@/config";
 import { useEffect, useRef, useState } from "react";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useInstrumentContext } from "../../contexts/IntrumentContext";
 
@@ -18,6 +19,7 @@ export default function Player() {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
+  const songId = useParams().songId as string;
   const songName = "Riots";
   const { choosenInstrument } = useInstrumentContext();
 
@@ -66,7 +68,7 @@ export default function Player() {
 
   return (
     <div className="p-10 flex flex-col items-center">
-      <Link href={`/${songName}`} className="self-start">
+      <Link href={`/${songId}`} className="self-start">
         Voltar
       </Link>
       <p className="self-end text-blue-500">
