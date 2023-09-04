@@ -56,6 +56,7 @@ async def download_and_split(
         url: Annotated[str, Query()],
 ):
     try:
+        print(f"Processing download and split of {url}")
         await asyncio.to_thread(download_and_split_use_case.execute, url)
     except Exception as e:
         print(str(e) + ":: error downloading and splitting")
@@ -66,13 +67,13 @@ def list_tracks():
     return list_tracks_use_case.execute()
 
 @app.get("/track-with-removed-stem", status_code=status.HTTP_200_OK)
-def get_track_with_remove_stem(
+async def get_track_with_remove_stem(
         filename: Annotated[str, Query()],
         stem_to_remove: Annotated[str, Query()],
 ):
     try:
-        file = get_track_with_removed_stem_use_case.execute(filename, stem_to_remove)
+        print(f"Processing remove stem {stem_to_remove} of {filename}")
+        file = await asyncio.to_thread(get_track_with_removed_stem_use_case.execute, filename, stem_to_remove)
         return file
     except Exception as e:
-        print(str(e) + ":: error getting track with removed stem")
         raise CustomError(status.HTTP_500_INTERNAL_SERVER_ERROR, str(e) + ":: error getting track with removed stem")
