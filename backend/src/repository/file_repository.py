@@ -31,9 +31,12 @@ class FileRepositoryImpl(FileRepository):
 
     @staticmethod
     def exists_track_with_stem_removed(filename: str, stem: str) -> bool:
-        folder_path = FileRepositoryImpl.get_splitted_folder_path(filename)
-        files = os.listdir(folder_path)
-        return any([f'{stem}_removed.wav' in file for file in files])
+        try:
+            folder_path = FileRepositoryImpl.get_splitted_folder_path(filename)
+            files = os.listdir(folder_path)
+            return any([f'{stem}_removed.wav' in file for file in files])
+        except FileNotFoundError as e:
+            raise CustomError.file_not_found() from e
     
     @staticmethod
     def list_tracks() -> list[str]:
