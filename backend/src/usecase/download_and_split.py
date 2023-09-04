@@ -13,6 +13,12 @@ class DownloadAndSplitUseCase:
 
     def execute(self, url: str) -> None:
         # Download video audio
-        filename = self.youtube_downloader_repository.download(url)
+        try:
+            filename = self.youtube_downloader_repository.download(url)
+        except Exception as e:
+            raise Exception(str(e) + ":: error downloading")
         # Split audio
-        self.spleeter_repository.split(filename)
+        try:
+            self.spleeter_repository.split(filename)
+        except Exception as e:
+            raise Exception(str(e) + ":: error splitting")
