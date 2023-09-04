@@ -1,3 +1,5 @@
+import asyncio
+
 from fastapi.middleware.cors import CORSMiddleware
 
 from typing import Annotated
@@ -50,10 +52,14 @@ def hello_world():
     return {"message": "Hello World"}
 
 @app.post("/download-and-split", status_code=status.HTTP_204_NO_CONTENT)
-def download_and_split(
+async def download_and_split(
         url: Annotated[str, Query()],
 ):
-    download_and_split_use_case.execute(url)
+    try:
+        await asyncio.to_thread(download_and_split_use_case.execute, url)
+    except Exception as e:
+        print(str(e) + ":: error downloading and splitting")
+        raise CustomError(status.HTTP_500_INTERNAL_SERVER_ERROR, str(e) + ":: error downloading and splitting")
 
 @app.get("/tracks", status_code=status.HTTP_200_OK)
 def list_tracks():
@@ -64,4 +70,9 @@ def get_track_with_remove_stem(
         filename: Annotated[str, Query()],
         stem_to_remove: Annotated[str, Query()],
 ):
-    return get_track_with_removed_stem_use_case.execute(filename, stem_to_remove)
+    try:
+        file = get_track_with_removed_stem_use_case.execute(filename, stem_to_remove)
+        return file
+    except Exception as e:
+        print(str(e) + ":: error getting track with removed stem")
+        raise CustomError(status.HTTP_500_INTERNAL_SERVER_ERROR, str(e) + ":: error getting track with removed stem")
