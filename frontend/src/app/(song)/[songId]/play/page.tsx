@@ -6,7 +6,6 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useInstrumentContext } from "../../contexts/IntrumentContext";
 import Load from "./components/load/load";
-import { error } from "console";
 
 const fetchSong = async (songName: string, instrument: string) => {
   const response = await fetch(
@@ -73,6 +72,11 @@ export default function Player() {
   };
 
   useEffect(() => {
+    handleFetchSong();
+  }, []);
+
+  useEffect(() => {
+    if (!isLoading) return;
     const delaySec = 10;
     let timer = setTimeout(() => handleFetchSong(), delaySec * 1000);
     return () => clearTimeout(timer);
