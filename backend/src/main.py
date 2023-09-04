@@ -1,3 +1,5 @@
+import asyncio
+
 from fastapi.middleware.cors import CORSMiddleware
 
 from typing import Annotated
@@ -50,10 +52,10 @@ def hello_world():
     return {"message": "Hello World"}
 
 @app.post("/download-and-split", status_code=status.HTTP_204_NO_CONTENT)
-def download_and_split(
+async def download_and_split(
         url: Annotated[str, Query()],
 ):
-    download_and_split_use_case.execute(url)
+    await asyncio.to_thread(download_and_split_use_case.execute, url)
 
 @app.get("/tracks", status_code=status.HTTP_200_OK)
 def list_tracks():
