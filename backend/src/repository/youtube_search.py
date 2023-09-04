@@ -1,6 +1,7 @@
+from src.repository.youtube_search_repository import YoutubeSearchRepository
 from youtubesearchpython import VideosSearch
 
-class YoutubeSearch:
+class YoutubeSearch(YoutubeSearchRepository):
     def search_videos(self, query: str, num_results: int = 10, result_type: str = 'videos') -> dict:
         try:
             videosSearch = VideosSearch(query, limit=num_results, type=result_type)
