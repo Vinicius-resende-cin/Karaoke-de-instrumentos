@@ -12,16 +12,21 @@ from src.entity.custom_error import CustomError
 from src.repository.combine_stems_repository_pydub import CombineStemsRepositoryPydub
 from src.repository.file_repository import FileRepositoryImpl
 from src.repository.spleeter_repositry_cli import SpleeterRepositoryCLI
+from src.repository.youtube_search_repository import YoutubeSearchRepository
 from src.repository.youtube_downloader_repository_pytube import YoutubeDownloaderRepositoryPytube
+
+from src.usecase.search_videos import YoutubeSearchUseCase
 from src.usecase.download_and_split import DownloadAndSplitUseCase
 from src.usecase.get_track_with_removed_stem import GetTrackWithRemovedStemUseCase
 from src.usecase.list_tracks import ListTracksUseCase
 
 file_repository = FileRepositoryImpl()
+search_repository = YoutubeSearchRepository()
 youtube_downloader_repository = YoutubeDownloaderRepositoryPytube()
 spleeter_repository = SpleeterRepositoryCLI(file_repository)
 combine_stems_repository = CombineStemsRepositoryPydub(file_repository)
 
+search_use_case = YoutubeSearchUseCase(search_repository)
 download_and_split_use_case = DownloadAndSplitUseCase(youtube_downloader_repository, spleeter_repository)
 get_track_with_removed_stem_use_case = GetTrackWithRemovedStemUseCase(file_repository, combine_stems_repository)
 list_tracks_use_case = ListTracksUseCase(file_repository)
@@ -50,6 +55,17 @@ def custom_error_handler(_: Request, e: CustomError):
 @app.get("/")
 def hello_world():
     return {"message": "Hello World"}
+
+@app.get("/search", status_code=status.HTTP_200_OK)
+async def get_track_with_remove_stem(
+        query: Annotated[str, Query()]
+):
+    try:
+        print(f"Processing search of {query}")
+        results = await asyncio.to_thread(search_use_case.execute, query)
+        return results
+    except Exception as e:
+        raise CustomError(status.HTTP_500_INTERNAL_SERVER_ERROR, str(e) + ":: error searching")
 
 @app.post("/download-and-split", status_code=status.HTTP_204_NO_CONTENT)
 async def download_and_split(

@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-class YoutubeSearchRepository(ABC):
+class YoutubeSearch(ABC):
     @abstractmethod
-    def search_videos(self, query: str, num_results: int = 10, result_type: str = 'videos') -> dict:
+    def search_videos(self, query: str, num_results: int = 10, lang='pt-BR', region='BR') -> dict:
         pass
