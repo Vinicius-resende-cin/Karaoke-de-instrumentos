@@ -2,14 +2,15 @@
 import Image from "next/image";
 import { serverURL } from "@/config";
 import { useEffect, useRef, useState } from "react";
-import { useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useSongContext } from "@/contexts/SongContext";
 import Link from "next/link";
 import { useInstrumentContext } from "../../contexts/IntrumentContext";
 import Load from "./components/load/load";
 
-const fetchSong = async (songName: string, instrument: string) => {
+const fetchSong = async (songId: string, instrument: string) => {
   const response = await fetch(
-    `${serverURL}/track-with-removed-stem?filename=${songName}.mp3&stem_to_remove=${instrument}`
+    `${serverURL}/track-with-removed-stem?songId=${songId}.mp3&stem_to_remove=${instrument}`
   );
 
   return response;
@@ -22,9 +23,15 @@ export default function Player() {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  const songId = useParams().songId as string;
-  const songName = "Riots";
+  const { selectedSong } = useSongContext();
   const { choosenInstrument } = useInstrumentContext();
+
+  const router = useRouter();
+
+  if (typeof selectedSong.id === "undefined") {
+    router.push("/home");
+    return;
+  }
 
   function stop() {
     if (audioRef.current) {
@@ -33,7 +40,7 @@ export default function Player() {
       setIsPlaying(false);
     }
 
-    window.location.href = "/home";
+    router.push("/home");
   }
 
   function playPause() {
@@ -55,7 +62,7 @@ export default function Player() {
   }
 
   const handleFetchSong = async () => {
-    fetchSong(songName, choosenInstrument)
+    fetchSong(selectedSong.id, choosenInstrument)
       .then((response) => {
         if (response.ok) return response.blob();
         throw new Error(`${response.status} server error`);
@@ -84,12 +91,12 @@ export default function Player() {
 
   return (
     <div className="p-10 flex flex-col items-center">
-      <Link href={`/${songId}`} className="self-start">
+      <Link href={`/${selectedSong.id}`} className="self-start">
         Voltar
       </Link>
       <p className="self-end text-blue-500">
         Tocando agora:{" "}
-        <span className="text-black font-bold dark:invert">{songName}</span>
+        <span className="text-black font-bold dark:invert">{selectedSong.title}</span>
       </p>
       <div className="w-full h-96 my-10 grow bg-blue-300 rounded-md"></div>
       {isLoading ? (

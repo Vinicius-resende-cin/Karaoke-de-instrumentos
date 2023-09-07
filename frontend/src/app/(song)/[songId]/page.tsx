@@ -1,22 +1,15 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { serverURL } from "@/config";
 import "./instrument-selection.scss";
 import { useInstrumentContext } from "../contexts/IntrumentContext";
-
-const BASE_URL = `${serverURL}/songs`;
+import { useSongContext } from "@/contexts/SongContext";
 
 const songURL = (songId: string) => {
   return `https://youtube.com/watch?v=${songId}`;
-};
-
-const fetchSong = async (songId: string) => {
-  const response = await fetch(`${BASE_URL}/${songId}/`);
-  const song = await response.json();
-  return song;
 };
 
 const loadServerSong = async (songId: string) => {
@@ -25,25 +18,24 @@ const loadServerSong = async (songId: string) => {
 };
 
 export default function InstrumentSelection() {
-  const [showAcordes, setShowAcordes] = useState(false);
-  const [showLetra, setShowLetra] = useState(false);
-  const [song, setSong] = useState();
   const [loadingSong, setLoadingSong] = useState(false);
   const { setChoosenInstrument } = useInstrumentContext();
+  const { selectedSong } = useSongContext();
 
-  const params = useParams();
+  const router = useRouter();
 
-  const toggleShowAcordes = () => {
-    setShowAcordes(!showAcordes);
-  };
+  if (typeof selectedSong.id === "undefined") {
+    router.push("/home");
+    return;
+  }
 
-  const toggleShowLetra = () => {
-    setShowLetra(!showLetra);
-  };
+  const thumbRatio = selectedSong.thumb.width / selectedSong.thumb.height;
+  const thumbHeight = 130;
+  const thumbWidth = thumbHeight * thumbRatio;
 
   const handleLoadSong = async () => {
     setLoadingSong(true);
-    await loadServerSong(params.songId as string);
+    await loadServerSong(selectedSong.id);
   };
 
   const handleChoosenInstrument = (instrument: string) => {
@@ -55,10 +47,6 @@ export default function InstrumentSelection() {
 
   const getSong = async () => {
     if (!loadingSong) await handleLoadSong();
-    if (!song) {
-      const song = await fetchSong(params.songId as string);
-      setSong(song);
-    }
   };
 
   useEffect(() => {
@@ -71,13 +59,15 @@ export default function InstrumentSelection() {
         Voltar
       </Link>
       <div className="flex flex-col items-center">
-        <Image src={"/icons/home.ico"} alt="Song Cover" width={130} height={130} />
-        <div className="text-2xl font-bold mt-5">Riots</div>
-        <div className="text-lg">Stuck In The Sound</div>
+        <Image
+          src={selectedSong.thumb.url}
+          alt="Song Cover"
+          width={thumbWidth}
+          height={thumbHeight}
+        />
+        <div className="text-2xl font-bold mt-5">{selectedSong.title}</div>
       </div>
-      <form
-        className="my-20 p-5 flex flex-col rounded-lg bg-gray-100 dark:text-slate-900"
-        action="">
+      <div className="my-20 p-5 flex flex-col rounded-lg bg-gray-100 dark:text-slate-900">
         <div className="mb-10 flex items-center justify-between gap-3">
           <label htmlFor="instrument" className="font-extrabold text-2xl">
             Instrumento:
@@ -94,24 +84,10 @@ export default function InstrumentSelection() {
             </select>
           </div>
         </div>
-        <div className="flex items-center justify-between text-lg font-extrabold">
-          <div>Mostrar Acordes:</div>
-          <div
-            className={`border-2 border-black w-5 h-5 transition-colors bg-transparent duration-300 flex items-center justify-center
-            ${showAcordes ? " checked" : ""}`}
-            onClick={toggleShowAcordes}></div>
-        </div>
-        <div className="flex items-center justify-between text-lg font-extrabold">
-          <div>Mostrar Letra:</div>
-          <div
-            className={`border-2 border-black w-5 h-5 transition-colors bg-transparent duration-300 flex items-center justify-center
-            ${showLetra ? " checked" : ""}`}
-            onClick={toggleShowLetra}></div>
-        </div>
-      </form>
+      </div>
       <Link
         className="w-1/2 flex items-center justify-center bg-blue-400 rounded-lg"
-        href={`${params.songId}/play`}>
+        href={`${selectedSong.id}/play`}>
         <span className="py-1 text-2xl">▶</span>
       </Link>
     </div>

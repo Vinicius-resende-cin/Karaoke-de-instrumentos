@@ -1,5 +1,9 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useSongContext } from "@/contexts/SongContext";
+import { useRouter } from "next/navigation";
 
 export interface SongThumb {
   url: string;
@@ -15,13 +19,21 @@ interface SongCardProps {
 }
 
 export default function SongCard({ id, title, thumb, url }: SongCardProps) {
+  const router = useRouter();
+  const { setSelectedSong } = useSongContext();
+
   const thumbRatio = thumb.width / thumb.height;
   const thumbHeight = 90;
   const thumbWidth = thumbHeight * thumbRatio;
 
+  function handleSelectSong() {
+    setSelectedSong({ id, title, thumb, url });
+    router.push(`/${id}`);
+  }
+
   return (
     <div
-      className="w-full py-1 px-3 flex flex-col sm:flex-row items-center gap-1 rounded-lg
+      className="w-full py-1 px-3 flex flex-col sm:flex-row items-center gap-5 rounded-lg
     bg-slate-300 shadow">
       <Link
         href={url}
@@ -32,11 +44,11 @@ export default function SongCard({ id, title, thumb, url }: SongCardProps) {
           {title}
         </h1>
       </Link>
-      <Link
-        href={`/${id}`}
-        className="w-full sm:w-auto sm:ml-auto flex items-center justify-center py-3 px-10 rounded-lg bg-blue-400 text-white">
+      <button
+        className="w-full sm:w-auto sm:ml-auto flex items-center justify-center py-3 px-10 rounded-lg bg-blue-400 text-white"
+        onClick={handleSelectSong}>
         Play
-      </Link>
+      </button>
     </div>
   );
 }
