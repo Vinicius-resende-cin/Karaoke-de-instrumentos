@@ -3,6 +3,7 @@ import asyncio
 from fastapi.middleware.cors import CORSMiddleware
 
 from typing import Annotated
+from pytube import YouTube
 
 from fastapi import FastAPI, Query, Request
 from starlette import status
@@ -84,12 +85,15 @@ def list_tracks():
 
 @app.get("/track-with-removed-stem", status_code=status.HTTP_200_OK)
 async def get_track_with_remove_stem(
-        filename: Annotated[str, Query()],
+        songId: Annotated[str, Query()],
         stem_to_remove: Annotated[str, Query()],
 ):
     try:
+        yt = YouTube(f"https://www.youtube.com/watch?v={songId}")
+        filename = youtube_downloader_repository._normalize_string(yt.title)
         print(f"Processing remove stem {stem_to_remove} of {filename}")
         file = await asyncio.to_thread(get_track_with_removed_stem_use_case.execute, filename, stem_to_remove)
         return file
     except Exception as e:
+        print(str(e) + ":: error getting track with removed stem")
         raise CustomError(status.HTTP_500_INTERNAL_SERVER_ERROR, str(e) + ":: error getting track with removed stem")
