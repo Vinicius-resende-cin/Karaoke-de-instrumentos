@@ -9,6 +9,7 @@ from pytube import YouTube
 from fastapi import FastAPI, Query, Request, UploadFile
 from starlette import status
 from starlette.responses import JSONResponse
+from dotenv import load_dotenv
 
 from src.entity.custom_error import CustomError
 from src.repository.combine_stems_repository_pydub import CombineStemsRepositoryPydub
@@ -23,6 +24,8 @@ from src.usecase.search_videos import YoutubeSearchUseCase
 from src.usecase.download_and_split import DownloadAndSplitUseCase
 from src.usecase.get_track_with_removed_stem import GetTrackWithRemovedStemUseCase
 from src.usecase.list_tracks import ListTracksUseCase
+
+load_dotenv()
 
 file_repository = FileRepositoryImpl()
 search_repository = YoutubeSearchRepository()
@@ -112,8 +115,9 @@ async def get_karaoke_score(
     try:
         yt = YouTube(f"https://www.youtube.com/watch?v={song_id}")
         filename = youtube_downloader_repository.normalize_string(yt.title)
+        print(f"Processing karaoke score of {filename}")
         score = await asyncio.to_thread(get_karaoke_score_use_case.execute, filename, stem, played_track)
-        return score
+        return {"score": score}
     except Exception as e:
         print(str(e) + ":: error getting karaoke score")
         raise CustomError(status.HTTP_500_INTERNAL_SERVER_ERROR, str(e) + ":: error getting karaoke score")
