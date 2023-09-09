@@ -12,7 +12,7 @@ from src.entity.youtube_downloader import YoutubeDownloaderRepository
 
 class YoutubeDownloaderRepositoryPytube(YoutubeDownloaderRepository):
     @staticmethod
-    def _normalize_string(s: str) -> str:
+    def normalize_string(s: str) -> str:
         decoded = urllib.parse.unquote(s)
         normalized = unidecode(decoded).replace(' ', '_')
         cleaned = re.sub(r'[^a-zA-Z0-9-_.]', '', normalized)
@@ -24,7 +24,7 @@ class YoutubeDownloaderRepositoryPytube(YoutubeDownloaderRepository):
             audio = yt.streams.filter(only_audio=True).first()
             if audio is None:
                 raise CustomError.audio_not_found()
-            filename = self._normalize_string(yt.title)
+            filename = self.normalize_string(yt.title)
             song = audio.download(output_path='./samples', filename=filename)
             base, _ = os.path.splitext(song)
             new_file = base + '.mp3'

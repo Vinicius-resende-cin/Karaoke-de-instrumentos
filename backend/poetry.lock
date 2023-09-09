@@ -59,6 +59,16 @@ six = ">=1.6.1,<2.0"
 wheel = ">=0.23.0,<1.0"
 
 [[package]]
+name = "audioread"
+version = "3.0.0"
+description = "multi-library, cross-platform audio decoding"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "audioread-3.0.0.tar.gz", hash = "sha256:121995bd207eb1fda3d566beb851d3534275925bc35a4fb6da0cb11de0f7251a"},
+]
+
+[[package]]
 name = "cachetools"
 version = "5.3.1"
 description = "Extensible memoizing collections and decorators"
@@ -806,6 +816,20 @@ files = [
 ]
 
 [[package]]
+name = "pyacoustid"
+version = "1.2.2"
+description = "bindings for Chromaprint acoustic fingerprinting and the Acoustid API"
+optional = false
+python-versions = "*"
+files = [
+    {file = "pyacoustid-1.2.2.tar.gz", hash = "sha256:c279d9c30a7f481f1420fc37db65833b5f9816cd364dc2acaa93a11c482d4141"},
+]
+
+[package.dependencies]
+audioread = "*"
+requests = "*"
+
+[[package]]
 name = "pyasn1"
 version = "0.5.0"
 description = "Pure-Python implementation of ASN.1 types and DER/BER/CER codecs (X.208)"
@@ -991,6 +1015,20 @@ files = [
 
 [package.dependencies]
 six = ">=1.5"
+
+[[package]]
+name = "python-multipart"
+version = "0.0.6"
+description = "A streaming multipart parser for Python"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "python_multipart-0.0.6-py3-none-any.whl", hash = "sha256:ee698bab5ef148b0a760751c261902cd096e57e10558e11aca17646b74ee1c18"},
+    {file = "python_multipart-0.0.6.tar.gz", hash = "sha256:e9925a80bb668529f1b67c7fdb0a5dacdd7cbfc6fb0bff3ea443fe22bdd62132"},
+]
+
+[package.extras]
+dev = ["atomicwrites (==1.2.1)", "attrs (==19.2.0)", "coverage (==6.5.0)", "hatch", "invoke (==1.7.3)", "more-itertools (==4.3.0)", "pbr (==4.3.0)", "pluggy (==1.0.0)", "py (==1.11.0)", "pytest (==7.2.0)", "pytest-cov (==4.0.0)", "pytest-timeout (==2.1.0)", "pyyaml (==5.1)"]
 
 [[package]]
 name = "pytube"
@@ -1559,4 +1597,4 @@ httpx = ">=0.14.2"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.11"
-content-hash = "044de2b35106b15655175d85a5eae514708079e4bc56407848ab423b948e39eb"
+content-hash = "120c0af1cf61efaa65d1b2e1c5fe7c47bce02d9ccbe807a1b767264fd1cbbd75"

@@ -1,36 +1,44 @@
 import asyncio
+import os
 
 from fastapi.middleware.cors import CORSMiddleware
 
 from typing import Annotated
 from pytube import YouTube
 
-from fastapi import FastAPI, Query, Request
+from fastapi import FastAPI, Query, Request, UploadFile
 from starlette import status
 from starlette.responses import JSONResponse
+from dotenv import load_dotenv
 
 from src.entity.custom_error import CustomError
 from src.repository.combine_stems_repository_pydub import CombineStemsRepositoryPydub
 from src.repository.file_repository import FileRepositoryImpl
+from src.repository.karaoke_repository import KaraokeRepositoryAcoustId
 from src.repository.spleeter_repositry_cli import SpleeterRepositoryCLI
 from src.repository.youtube_search_repository import YoutubeSearchRepository
 from src.repository.youtube_downloader_repository_pytube import YoutubeDownloaderRepositoryPytube
+from src.usecase.get_karaoke_score import GetKaraokeScoreUseCase
 
 from src.usecase.search_videos import YoutubeSearchUseCase
 from src.usecase.download_and_split import DownloadAndSplitUseCase
 from src.usecase.get_track_with_removed_stem import GetTrackWithRemovedStemUseCase
 from src.usecase.list_tracks import ListTracksUseCase
 
+load_dotenv()
+
 file_repository = FileRepositoryImpl()
 search_repository = YoutubeSearchRepository()
 youtube_downloader_repository = YoutubeDownloaderRepositoryPytube()
 spleeter_repository = SpleeterRepositoryCLI(file_repository)
 combine_stems_repository = CombineStemsRepositoryPydub(file_repository)
+karaoke_repository = KaraokeRepositoryAcoustId(os.environ['ACOUSTID_API_KEY'], file_repository)
 
 search_use_case = YoutubeSearchUseCase(search_repository)
 download_and_split_use_case = DownloadAndSplitUseCase(youtube_downloader_repository, spleeter_repository)
 get_track_with_removed_stem_use_case = GetTrackWithRemovedStemUseCase(file_repository, combine_stems_repository)
 list_tracks_use_case = ListTracksUseCase(file_repository)
+get_karaoke_score_use_case = GetKaraokeScoreUseCase(karaoke_repository)
 
 app = FastAPI()
 
@@ -58,7 +66,7 @@ def hello_world():
     return {"message": "Hello World"}
 
 @app.get("/search", status_code=status.HTTP_200_OK)
-async def get_track_with_remove_stem(
+async def search_songs(
         query: Annotated[str, Query()]
 ):
     try:
@@ -85,15 +93,31 @@ def list_tracks():
 
 @app.get("/track-with-removed-stem", status_code=status.HTTP_200_OK)
 async def get_track_with_remove_stem(
-        songId: Annotated[str, Query()],
+        song_id: Annotated[str, Query(alias="songId")],
         stem_to_remove: Annotated[str, Query()],
 ):
     try:
-        yt = YouTube(f"https://www.youtube.com/watch?v={songId}")
-        filename = youtube_downloader_repository._normalize_string(yt.title)
+        yt = YouTube(f"https://www.youtube.com/watch?v={song_id}")
+        filename = youtube_downloader_repository.normalize_string(yt.title)
         print(f"Processing remove stem {stem_to_remove} of {filename}")
         file = await asyncio.to_thread(get_track_with_removed_stem_use_case.execute, filename, stem_to_remove)
         return file
     except Exception as e:
         print(str(e) + ":: error getting track with removed stem")
         raise CustomError(status.HTTP_500_INTERNAL_SERVER_ERROR, str(e) + ":: error getting track with removed stem")
+
+@app.post("/karaoke-score", status_code=status.HTTP_200_OK)
+async def get_karaoke_score(
+        played_track: UploadFile,
+        stem: Annotated[str, Query()],
+        song_id: Annotated[str, Query(alias="songId")],
+):
+    try:
+        yt = YouTube(f"https://www.youtube.com/watch?v={song_id}")
+        filename = youtube_downloader_repository.normalize_string(yt.title)
+        print(f"Processing karaoke score of {filename}")
+        score = await asyncio.to_thread(get_karaoke_score_use_case.execute, filename, stem, played_track)
+        return {"score": score}
+    except Exception as e:
+        print(str(e) + ":: error getting karaoke score")
+        raise CustomError(status.HTTP_500_INTERNAL_SERVER_ERROR, str(e) + ":: error getting karaoke score")
