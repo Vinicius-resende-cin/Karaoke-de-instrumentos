@@ -16,13 +16,19 @@ sudo apt-get install libasound2-dev
 ## Setup
 
 Install dependencies using poetry:
+
 ```sh
 poetry install
 ```
 
+Create a .env file with the following variables:
+
+- ACOUSTID_API_KEY = key to access the AcoustID API
+
 ## Run
 
 Run the API:
+
 ```sh
 poetry run uvicorn src.main:app --reload
 ```
