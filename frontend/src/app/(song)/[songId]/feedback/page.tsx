@@ -1,29 +1,45 @@
 "use client";
 
 import { useFeedbackContext } from "../../contexts/FeedbackContext";
+import Image from "next/image";
+import Link from "next/link";
+import { useSongContext } from "@/contexts/SongContext";
+import "./feedback.scss";
 
 export default function Feedback() {
   const { score } = useFeedbackContext();
+  const { selectedSong } = useSongContext();
 
   function getStarScore(score: number) {
     if (score < 0.1) {
-      return "☆☆☆☆☆";
+      return "/images/0stars.png";
     } else if (score < 0.25) {
-      return "★☆☆☆☆";
+      return "/images/1stars.png";
     } else if (score < 0.5) {
-      return "★★☆☆☆";
+      return "/images/2stars.png";
     } else if (score < 0.6) {
-      return "★★★☆☆";
+      return "/images/3stars.png";
     } else if (score < 0.9) {
-      return "★★★★☆";
+      return "/images/4stars.png";
     } else {
-      return "★★★★★";
+      return "/images/5stars.png";
     }
   }
 
   return (
-    <div>
-      <h1>{getStarScore(score)}</h1>
+    <div className="container">
+      <div className="scoreContainer">
+        <h1 className="score">Pontuação</h1>
+        <Image src={getStarScore(score)} alt="stars" width={250} height={100} />
+      </div>
+      <div className="buttonsContainer">
+        <Link href={`/${selectedSong.id}/play`} className="resetButton">
+          <Image src={"/icons/reset.ico"} alt="home button" width={35} height={35} />
+        </Link>
+        <Link href="/home" className="homeButton">
+          <Image src={"/icons/home.ico"} alt="home button" width={40} height={40} />
+        </Link>
+      </div>
     </div>
   );
 }

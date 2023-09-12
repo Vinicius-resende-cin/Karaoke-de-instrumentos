@@ -68,15 +68,14 @@ export default function Player() {
     }
 
     if (goHome) router.push("/home");
+    else router.push(`/${selectedSong.id}/feedback`);
   }
 
   const { startRecording, stopRecording } = useReactMediaRecorder({
     audio: true,
     onStop: (blobUrl, blob) => {
       console.log(blobUrl);
-      stop(false);
       handleFetchFeedback(blob);
-      router.push(`/${selectedSong.id}/feedback`);
     }
   });
 
@@ -103,9 +102,9 @@ export default function Player() {
     startRecording();
   }
 
-  function handleStop() {
-    stop();
+  function handleStop(goHome: boolean = true) {
     stopRecording();
+    stop(goHome);
   }
 
   const handleFetchSong = async () => {
@@ -151,7 +150,11 @@ export default function Player() {
       ) : (
         <>
           {songSrc && (
-            <audio ref={audioRef} onEnded={handleStop}>
+            <audio
+              ref={audioRef}
+              onEnded={() => {
+                handleStop(false);
+              }}>
               <source src={songSrc} type="audio/wav" />
               Your browser does not support the audio element.
             </audio>
@@ -170,7 +173,9 @@ export default function Player() {
             </button>
             <button
               className="w-10 h-10 flex items-center justify-center rounded-sm bg-gray-500 disabled:bg-gray-400"
-              onClick={handleStop}
+              onClick={() => {
+                handleStop();
+              }}
               disabled={!songSrc}>
               <Image src={"/icons/stop.ico"} alt="stop button" width={20} height={20} />
             </button>
