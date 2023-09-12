@@ -2,6 +2,7 @@
 
 import { useFeedbackContext } from "../../contexts/FeedbackContext";
 import Image from "next/image";
+import Link from "next/link";
 import { useSongContext } from "@/contexts/SongContext";
 import "./feedback.scss";
 
@@ -32,12 +33,12 @@ export default function Feedback() {
         <Image src={getStarScore(score)} alt="stars" width={250} height={100} />
       </div>
       <div className="buttonsContainer">
-        <a href={`/${selectedSong.id}/play`} className="resetButton">
+        <Link href={`/${selectedSong.id}/play`} className="resetButton">
           <Image src={"/icons/reset.ico"} alt="home button" width={35} height={35} />
-        </a>
-        <a href="/home" className="homeButton">
+        </Link>
+        <Link href="/home" className="homeButton">
           <Image src={"/icons/home.ico"} alt="home button" width={40} height={40} />
-        </a>
+        </Link>
       </div>
     </div>
   );
