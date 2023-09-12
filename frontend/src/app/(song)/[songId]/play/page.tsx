@@ -6,11 +6,28 @@ import { useRouter } from "next/navigation";
 import { useSongContext } from "@/contexts/SongContext";
 import Link from "next/link";
 import { useInstrumentContext } from "../../contexts/IntrumentContext";
+import { useFeedbackContext } from "../../contexts/FeedbackContext";
 import Load from "./components/load/load";
+import { useReactMediaRecorder } from "react-media-recorder";
 
 const fetchSong = async (songId: string, instrument: string) => {
   const response = await fetch(
     `${serverURL}/track-with-removed-stem?songId=${songId}.mp3&stem_to_remove=${instrument}`
+  );
+
+  return response;
+};
+
+const fetchFeedback = async (played_track: Blob, stem: string, songId: string) => {
+  const data = new FormData();
+  data.append("played_track", played_track);
+
+  const response = await fetch(
+    `${serverURL}/karaoke-score?stem=${stem}&songId=${songId}`,
+    {
+      method: "POST",
+      body: data
+    }
   );
 
   return response;
@@ -23,42 +40,72 @@ export default function Player() {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
+  const router = useRouter();
+
   const { selectedSong } = useSongContext();
   const { choosenInstrument } = useInstrumentContext();
+  const { setScore } = useFeedbackContext();
 
-  const router = useRouter();
+  async function handleFetchFeedback(blob: Blob) {
+    return await fetchFeedback(blob, choosenInstrument, selectedSong.id)
+      .then((response) => {
+        if (response.ok) return response.json();
+        throw new Error(`${response.status} server error`);
+      })
+      .then((data) => {
+        console.log(data);
+        setScore(data.score);
+      })
+      .catch((error) => {
+        console.error("Error fetching feedback:", error);
+      });
+  }
+
+  function stop(goHome: boolean = true) {
+    if (audioRef.current) {
+      restart();
+      setIsPlaying(false);
+    }
+
+    if (goHome) router.push("/home");
+  }
+
+  const { startRecording, stopRecording } = useReactMediaRecorder({
+    audio: true,
+    onStop: (blobUrl, blob) => {
+      console.log(blobUrl);
+      stop(false);
+      handleFetchFeedback(blob);
+      router.push(`/${selectedSong.id}/feedback`);
+    }
+  });
 
   if (typeof selectedSong.id === "undefined") {
     router.push("/home");
     return;
   }
 
-  function stop() {
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
-      setIsPlaying(false);
-    }
-
-    router.push("/home");
-  }
-
-  function playPause() {
+  function start() {
     if (!audioRef.current) return;
-
-    if (isPlaying) {
-      audioRef.current.pause();
-      setIsPlaying(false);
-    } else {
-      audioRef.current.play();
-      setIsPlaying(true);
-    }
+    restart();
+    audioRef.current.play();
+    setIsPlaying(true);
   }
 
   function restart() {
     if (!audioRef.current) return;
-    playPause();
+    audioRef.current.pause();
     audioRef.current.currentTime = 0;
+  }
+
+  function handleStart() {
+    start();
+    startRecording();
+  }
+
+  function handleStop() {
+    stop();
+    stopRecording();
   }
 
   const handleFetchSong = async () => {
@@ -104,7 +151,7 @@ export default function Player() {
       ) : (
         <>
           {songSrc && (
-            <audio ref={audioRef}>
+            <audio ref={audioRef} onEnded={handleStop}>
               <source src={songSrc} type="audio/wav" />
               Your browser does not support the audio element.
             </audio>
@@ -112,7 +159,7 @@ export default function Player() {
           <div className="w-full flex items-center justify-around">
             <button
               className="w-10 h-10 flex items-center justify-center rounded-sm bg-blue-500 disabled:bg-gray-400"
-              onClick={playPause}
+              onClick={handleStart}
               disabled={!songSrc}>
               <Image
                 src={isPlaying ? "/icons/pause.ico" : "/icons/play.ico"}
@@ -123,20 +170,9 @@ export default function Player() {
             </button>
             <button
               className="w-10 h-10 flex items-center justify-center rounded-sm bg-gray-500 disabled:bg-gray-400"
-              onClick={stop}
+              onClick={handleStop}
               disabled={!songSrc}>
               <Image src={"/icons/stop.ico"} alt="stop button" width={20} height={20} />
-            </button>
-            <button
-              className="w-10 h-10 flex items-center justify-center rounded-sm bg-green-500 disabled:bg-gray-400"
-              onClick={restart}
-              disabled={!songSrc}>
-              <Image
-                src={"/icons/reset.ico"}
-                alt="restart button"
-                width={20}
-                height={20}
-              />
             </button>
           </div>
         </>
