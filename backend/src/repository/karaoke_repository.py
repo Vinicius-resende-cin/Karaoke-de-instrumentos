@@ -51,6 +51,6 @@ class KaraokeRepositoryAcoustId(KaraokeRepository):
         score_euclidean = 1 - distance.euclidean(norm_stem_fp, norm_played_track_fp)
         score_correlation = 1 - distance.correlation(norm_stem_fp, norm_played_track_fp)
         
-        final_score = (score_cosine + score_euclidean) ** 2 * min(score_correlation, 0.05) * 10 / 2
+        final_score = abs((score_cosine + score_euclidean) ** 2 * min(score_correlation, 0.05) * 10) / 2
 
         return final_score
