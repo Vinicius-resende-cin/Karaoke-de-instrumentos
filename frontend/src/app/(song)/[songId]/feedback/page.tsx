@@ -1,7 +1,11 @@
 "use client";
 
+import Image from "next/image";
 import { serverURL } from "@/config";
 import { useEffect, useState } from "react";
+import { useSongContext } from "@/contexts/SongContext";
+import { useInstrumentContext } from "../../contexts/IntrumentContext";
+import "./feedback.scss"
 
 const fetchFeedback = async (played_track: Blob, stem: string, songId: string) => {
   const data = new FormData();
@@ -22,28 +26,28 @@ export default function Feedback() {
   const [file, setFile] = useState<File | null>(null);
   const [score, setScore] = useState<number>(0);
 
-  const stem = "bass";
-  const songId = "QU9c0053UAU";
+  const { selectedSong } = useSongContext();
+  const { choosenInstrument } = useInstrumentContext();
 
   function getStarScore(score: number) {
     if (score < 0.5) {
-      return "☆☆☆☆☆";
+      return "/images/0stars.png";
     } else if (score < 0.6) {
-      return "★☆☆☆☆";
+      return "/images/2stars.png";
     } else if (score < 0.7) {
-      return "★★☆☆☆";
+      return "/images/3stars.png";
     } else if (score < 0.8) {
-      return "★★★☆☆";
+      return "/images/4stars.png";
     } else if (score < 0.9) {
-      return "★★★★☆";
+      return "/images/5stars.png";
     } else {
-      return "★★★★★";
+      return "/images/1stars.png";
     }
   }
 
   useEffect(() => {
     if (!file) return;
-    fetchFeedback(file, stem, songId)
+    fetchFeedback(file, choosenInstrument, selectedSong.id)
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
@@ -58,11 +62,34 @@ export default function Feedback() {
   }
 
   return (
-    <div>
-      <form>
-        <input type="file" onChange={handleChangeFile} />
-      </form>
-      <h1>{getStarScore(score)}</h1>
+    <div className="container">
+      <div className="scoreContainer">
+      <h1 className="score">Pontuação</h1>
+      <Image
+        src={getStarScore(score)}
+        alt="stars"
+        width={250}
+        height={100}
+      />
+      </div>
+      <div className="buttonsContainer">
+        <a href={`/${selectedSong.id}/play`} className="resetButton">
+          <Image
+            src={"/icons/reset.ico"}
+            alt="home button"
+            width={35}
+            height={35}
+          />
+        </a>
+        <a href="/home" className="homeButton">
+        <Image
+          src={"/icons/home.ico"}
+          alt="home button"
+          width={40}
+          height={40}
+        />
+        </a>
+      </div>
     </div>
   );
 }
