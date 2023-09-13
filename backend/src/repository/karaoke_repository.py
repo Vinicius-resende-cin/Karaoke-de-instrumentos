@@ -11,21 +11,20 @@ from src.entity.karaoke import KaraokeRepository
 
 
 class KaraokeRepositoryAcoustId(KaraokeRepository):
-    def __init__(self, api_key: str, file_repository: FileRepository):
-        self.api_key = api_key
+    def __init__(self, file_repository: FileRepository):
         self.file_repository = file_repository
 
     def get_score(self, filename: str, stem: str, played_track: UploadFile) -> float:
         # Get stem fingerprint
         folder_path = self.file_repository.get_splitted_folder_path(filename)
         stem_file = f'{folder_path}/{stem}'
-        stem_duration, stem_fingerprint = acoustid.fingerprint_file(stem_file)
+        _, stem_fingerprint = acoustid.fingerprint_file(stem_file)
 
         # Get played track fingerprint
         played_track_path = f'./uploads/{uuid.uuid4()}'
         with open(played_track_path, 'wb') as f:
             f.write(played_track.file.read())
-        played_track_duration, played_track_fingerprint = acoustid.fingerprint_file(played_track_path)
+        _, played_track_fingerprint = acoustid.fingerprint_file(played_track_path)
 
         # Compare fingerprints
         # make them the same size (ignore alignment)
