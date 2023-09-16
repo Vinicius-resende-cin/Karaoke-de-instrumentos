@@ -55,7 +55,7 @@ export default function InstrumentSelection() {
 
   return (
     <div className="p-10 flex flex-col items-center">
-      <Link href="/home" className="self-start">
+      <Link href="/home" className="self-start mb-10">
         Voltar
       </Link>
       <div className="flex flex-col items-center">
