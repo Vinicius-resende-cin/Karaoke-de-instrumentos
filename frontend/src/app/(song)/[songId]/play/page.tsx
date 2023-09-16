@@ -73,6 +73,10 @@ export default function Player() {
 
   const { startRecording, stopRecording } = useReactMediaRecorder({
     audio: true,
+    onStart: () => {
+      console.log("started recording");
+      setScore(0);
+    },
     onStop: (blobUrl, blob) => {
       console.log(blobUrl);
       handleFetchFeedback(blob);
@@ -87,6 +91,8 @@ export default function Player() {
   function start() {
     if (!audioRef.current) return;
     restart();
+    stopRecording();
+    if (isPlaying) return;
     audioRef.current.play();
     setIsPlaying(true);
   }
@@ -95,11 +101,13 @@ export default function Player() {
     if (!audioRef.current) return;
     audioRef.current.pause();
     audioRef.current.currentTime = 0;
+    if (!isPlaying) return;
+    setIsPlaying(false);
   }
 
   function handleStart() {
     start();
-    startRecording();
+    if (!isPlaying) startRecording();
   }
 
   function handleStop(goHome: boolean = true) {
@@ -161,12 +169,14 @@ export default function Player() {
           )}
           <div className="w-full flex items-center justify-around">
             <button
-              className="w-10 h-10 flex items-center justify-center rounded-sm bg-blue-500 disabled:bg-gray-400"
+              className={`w-10 h-10 flex items-center justify-center rounded-sm ${
+                isPlaying ? "bg-[#13ad5b]" : "bg-blue-500"
+              } disabled:bg-gray-400`}
               onClick={handleStart}
               disabled={!songSrc}>
               <Image
-                src={isPlaying ? "/icons/pause.ico" : "/icons/play.ico"}
-                alt="play/pause button"
+                src={isPlaying ? "/icons/reset.ico" : "/icons/play.ico"}
+                alt="play/restart button"
                 width={20}
                 height={20}
               />
