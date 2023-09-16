@@ -21,10 +21,6 @@ Install dependencies using poetry:
 poetry install
 ```
 
-Create a .env file with the following variables:
-
-- ACOUSTID_API_KEY = key to access the AcoustID API
-
 ## Run
 
 Run the API:

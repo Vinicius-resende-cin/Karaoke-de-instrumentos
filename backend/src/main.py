@@ -32,7 +32,7 @@ search_repository = YoutubeSearchRepository()
 youtube_downloader_repository = YoutubeDownloaderRepositoryPytube()
 spleeter_repository = SpleeterRepositoryCLI(file_repository)
 combine_stems_repository = CombineStemsRepositoryPydub(file_repository)
-karaoke_repository = KaraokeRepositoryAcoustId(os.environ['ACOUSTID_API_KEY'], file_repository)
+karaoke_repository = KaraokeRepositoryAcoustId(file_repository)
 
 search_use_case = YoutubeSearchUseCase(search_repository)
 download_and_split_use_case = DownloadAndSplitUseCase(youtube_downloader_repository, spleeter_repository)
