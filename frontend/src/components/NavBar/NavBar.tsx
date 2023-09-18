@@ -11,16 +11,10 @@ export default function NavBar() {
   };
 
   return (
-    <nav>
+    <nav className="bg-slate-200 dark:bg-slate-900">
       <div className="flex flex-row justify-between px-5 py-6">
         <span className="flex items-center gap-2 text-xl font-bold">
-          <Image
-            src="/icons/mic.ico"
-            alt="Logo"
-            className="dark:invert"
-            width={50}
-            height={50}
-          />
+          <Image src="/icons/mic.ico" alt="Logo" className="dark:invert" width={50} height={50} />
           Karaoke
         </span>
         <span className="flex items-center gap-5">
