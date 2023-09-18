@@ -12,7 +12,7 @@ import { useReactMediaRecorder } from "react-media-recorder";
 
 const fetchSong = async (songId: string, instrument: string) => {
   const response = await fetch(
-    `${serverURL}/track-with-removed-stem?songId=${songId}.mp3&stem_to_remove=${instrument}`
+    `${serverURL}/track-with-removed-stem?songId=${songId}&stem_to_remove=${instrument}`
   );
 
   return response;
@@ -22,13 +22,10 @@ const fetchFeedback = async (played_track: Blob, stem: string, songId: string) =
   const data = new FormData();
   data.append("played_track", played_track);
 
-  const response = await fetch(
-    `${serverURL}/karaoke-score?stem=${stem}&songId=${songId}`,
-    {
-      method: "POST",
-      body: data
-    }
-  );
+  const response = await fetch(`${serverURL}/karaoke-score?stem=${stem}&songId=${songId}`, {
+    method: "POST",
+    body: data
+  });
 
   return response;
 };
