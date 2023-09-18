@@ -6,7 +6,7 @@ class YoutubeSearchRepository(YoutubeSearch):
         try:
             videosSearch = VideosSearch(query, limit=num_results, language=lang, region=region)
             results = videosSearch.result().get('result', None)
-            videos = {}
+            videos = []
             if results is not None:
                 for i in range(len(results)):
                     id = results[i]['id']
@@ -14,10 +14,10 @@ class YoutubeSearchRepository(YoutubeSearch):
                     thumb = results[i]['thumbnails'][-1]
                     url = results[i]['link']
 
-                    videos[i] = {'id': id, 'title': title, 'thumb': thumb, 'url': url}
+                    videos.append({'id': id, 'title': title, 'thumb': thumb, 'url': url})
             else:
                 print("Nenhum resultado encontrado.")
-            return videos
+            return {"results": videos}
         except ConnectionError as e:
             print(f"Um erro de conexão aconteceu: {e}")
             return {}
