@@ -1,11 +1,5 @@
-import SongCard, { SongThumb } from "./SongCard/SongCard";
-
-interface Song {
-  id: string;
-  title: string;
-  thumb: SongThumb;
-  url: string;
-}
+import SongCard from "./SongCard/SongCard";
+import { Song } from "@/models/Song";
 
 interface SongListProps {
   songs: Song[];
