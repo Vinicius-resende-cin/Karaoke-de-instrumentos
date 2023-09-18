@@ -9,7 +9,6 @@ from pytube import YouTube
 from fastapi import FastAPI, Query, Request, UploadFile
 from starlette import status
 from starlette.responses import JSONResponse
-from dotenv import load_dotenv
 
 from src.entity.custom_error import CustomError
 from src.repository.combine_stems_repository_pydub import CombineStemsRepositoryPydub
@@ -25,7 +24,6 @@ from src.usecase.download_and_split import DownloadAndSplitUseCase
 from src.usecase.get_track_with_removed_stem import GetTrackWithRemovedStemUseCase
 from src.usecase.list_tracks import ListTracksUseCase
 
-load_dotenv()
 
 file_repository = FileRepositoryImpl()
 search_repository = YoutubeSearchRepository()
@@ -42,13 +40,9 @@ get_karaoke_score_use_case = GetKaraokeScoreUseCase(karaoke_repository)
 
 app = FastAPI()
 
-origins = [
-    "http://localhost:3000",
-]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

@@ -34,4 +34,4 @@ class YoutubeDownloaderRepositoryPytube(YoutubeDownloaderRepository):
         except (RegexMatchError, VideoUnavailable, PytubeError) as e:
             raise CustomError.error_downloading() from e
         except Exception as e:
-            raise CustomError.internal_error() from e
+            pass
