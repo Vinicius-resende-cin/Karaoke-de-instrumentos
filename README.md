@@ -1,3 +1,5 @@
+![logo](https://github.com/Vinicius-resende-cin/Karaoke-de-instrumentos/assets/92769975/e7c119b1-1f90-4cca-aa22-65f10ff308f3)
+
 # Karaoke-de-instrumentos
 
 Projeto para a disciplina de Multimídia do CIn - UFPE
